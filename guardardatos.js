@@ -8,31 +8,13 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 // Datos de los nuevos usuarios a insertar
 const nuevosUsuarios = [
   {
-    identificacion: 112233,
-    nombre_usuario: "Ana López",
-    clave_encriptada: "anaSecure123",
+    identificacion: 1079035342,
+    nombre_usuario: "gordo caro",
+    clave_encriptada: "gordo123",
     usuario_normal: 1,
     usuario_administrador: 0,
     usuario_superadministrador: 0,
-    email: "ana.lopez@ejemplo.com"
-  },
-  {
-    identificacion: 445566,
-    nombre_usuario: "Carlos Ruiz",
-    clave_encriptada: "carlosPass456",
-    usuario_normal: 0,
-    usuario_administrador: 1,
-    usuario_superadministrador: 0,
-    email: "carlos.ruiz@ejemplo.com"
-  },
-  {
-    identificacion: 778899,
-    nombre_usuario: "Sofía Mendoza",
-    clave_encriptada: "sofiaM789",
-    usuario_normal: 0,
-    usuario_administrador: 0,
-    usuario_superadministrador: 1,
-    email: "sofia.mendoza@ejemplo.com"
+    email: "elgordo@gmail.com"
   }
 ];
 

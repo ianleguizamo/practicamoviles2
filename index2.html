@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mostrar Usuarios desde Supabase</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .user-list {
+      margin-top: 20px;
+    }
+    .user-item {
+      background-color: #f5f5f5;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .user-item strong {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Usuarios desde Supabase</h1>
+  <button id="loadUsersBtn">Cargar Usuarios</button>
+
+  <div id="userList" class="user-list"></div>
+
+  <script>
+    // Elemento del DOM
+    const loadUsersBtn = document.getElementById('loadUsersBtn');
+    const userList = document.getElementById('userList');
+
+    // Función para cargar los usuarios desde el backend
+    async function loadUsers() {
+      try {
+        const response = await fetch('http://localhost:3000/get-users');
+        const users = await response.json();
+
+        if (users.error) {
+          throw new Error(users.error);
+        }
+
+        // Limpiar la lista de usuarios antes de agregar los nuevos
+        userList.innerHTML = '';
+
+        // Mostrar los usuarios en la página
+        users.forEach(user => {
+          const userDiv = document.createElement('div');
+          userDiv.classList.add('user-item');
+          userDiv.innerHTML = `
+            <strong>Nombre:</strong> ${user.nombre_usuario} <br>
+            <strong>Email:</strong> ${user.email} <br>
+            <strong>Tipo de usuario:</strong> ${user.usuario_superadministrador ? 'Super Admin' :
+              user.usuario_administrador ? 'Administrador' : 'Usuario Normal'} <br>
+            <hr>
+          `;
+          userList.appendChild(userDiv);
+        });
+      } catch (error) {
+        console.error('Error al cargar los usuarios:', error);
+      }
+    }
+
+    // Evento para cargar los usuarios cuando se presiona el botón
+    loadUsersBtn.addEventListener('click', loadUsers);
+  </script>
+
+</body>
+</html>

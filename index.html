@@ -3,202 +3,165 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Autenticación</title>
+  <title>Datos de Usuarios</title>
   <style>
+    /* Estilos generales */
     body {
-      font-family: Arial, sans-serif;
-      max-width: 500px;
-      margin: 0 auto;
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
       padding: 20px;
+      color: #333;
     }
-    .form-container {
-      background: #f5f5f5;
-      padding: 20px;
-      border-radius: 8px;
+
+    h1 {
+      text-align: center;
+      color: #4CAF50;
       margin-bottom: 20px;
     }
-    h1 {
-      color: #333;
-      text-align: center;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      box-sizing: border-box;
-    }
+
     button {
       background-color: #4CAF50;
       color: white;
+      padding: 12px 24px;
+      font-size: 16px;
       border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      opacity: 0.8;
-    }
-    .message {
-      padding: 10px;
-      margin: 10px 0;
       border-radius: 4px;
-      display: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-bottom: 20px;
+      display: block;
+      width: 200px;
+      margin-left: auto;
+      margin-right: auto;
     }
-    .success {
-      background-color: #dff0d8;
-      color: #3c763d;
+
+    button:hover {
+      background-color: #45a049;
     }
-    .error {
-      background-color: #f2dede;
-      color: #a94442;
+
+    /* Estilos de la tabla */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
     }
-    .welcome {
-      display: none;
-      text-align: center;
+
+    th, td {
+      padding: 12px;
+      text-align: left;
     }
-    .hidden {
-      display: none;
+
+    th {
+      background-color: #f2f2f2;
+      font-size: 16px;
+    }
+
+    td {
+      background-color: #fff;
+      font-size: 14px;
+      border-top: 1px solid #ddd;
+    }
+
+    tr:hover td {
+      background-color: #f9f9f9;
+    }
+
+    /* Estilos para bordes de tabla */
+    table, th, td {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    /* Sombra y bordes redondeados */
+    .table-container {
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: #fff;
+      padding: 20px;
+    }
+
+    /* Responsividad */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 20px;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      table, th, td {
+        font-size: 12px;
+      }
     }
   </style>
 </head>
 <body>
-  <div id="loginForm" class="form-container">
-    <h1>Iniciar Sesión</h1>
-    <input type="number" id="loginIdentificacion" placeholder="Identificación" required>
-    <input type="password" id="loginPassword" placeholder="Contraseña" required>
-    <button id="loginBtn">Ingresar</button>
-    <p>¿No tienes cuenta? <a href="#" id="showRegister">Regístrate aquí</a></p>
-    <div id="loginMessage" class="message"></div>
+  <h1>Listado de Usuarios</h1>
+  <button id="loadButton">Cargar Datos</button>
+  <button id="registrar">registrar usuario</button>
+  
+<script>
+  document.getElementById('registrar').addEventListener('click', function() {
+      window.location.href = 'gd.html'; 
+  });
+</script>
+
+  <div class="table-container">
+    <table id="userTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Fecha de Registro</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Aquí se mostrarán los datos de los usuarios -->
+      </tbody>
+    </table>
   </div>
- 
-  <div id="registerForm" class="form-container hidden">
-    <h1>Registro</h1>
-    <input type="number" id="regIdentificacion" placeholder="Identificación" required>
-    <input type="text" id="regNombre" placeholder="Nombre completo" required>
-    <input type="email" id="regEmail" placeholder="Email" required>
-    <input type="password" id="regPassword" placeholder="Contraseña" required>
-    <select id="regTipoUsuario" required>
-      <option value="">Selecciona tipo de usuario</option>
-      <option value="normal">Usuario Normal</option>
-      <option value="admin">Administrador</option>
-      <option value="superadmin">Super Administrador</option>
-    </select>
-    <button id="registerBtn">Registrarse</button>
-    <p>¿Ya tienes cuenta? <a href="#" id="showLogin">Inicia sesión aquí</a></p>
-    <div id="registerMessage" class="message"></div>
-  </div>
- 
-  <div id="welcomePanel" class="welcome">
-    <h1 id="welcomeTitle">Bienvenido</h1>
-    <p id="userInfo"></p>
-    <button id="logoutBtn">Cerrar Sesión</button>
-  </div>
- 
+
   <script>
-    // Elementos del DOM
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const welcomePanel = document.getElementById('welcomePanel');
-    const loginMessage = document.getElementById('loginMessage');
-    const registerMessage = document.getElementById('registerMessage');
-    const welcomeTitle = document.getElementById('welcomeTitle');
-    const userInfo = document.getElementById('userInfo');
- 
-    // Mostrar/ocultar formularios
-    document.getElementById('showRegister').addEventListener('click', (e) => {
-      e.preventDefault();
-      loginForm.classList.add('hidden');
-      registerForm.classList.remove('hidden');
-    });
- 
-    document.getElementById('showLogin').addEventListener('click', (e) => {
-      e.preventDefault();
-      registerForm.classList.remove('hidden');
-      loginForm.classList.add('hidden');
-    });
- 
-    // Login
-    document.getElementById('loginBtn').addEventListener('click', async () => {
-      const identificacion = document.getElementById('loginIdentificacion').value;
-      const password = document.getElementById('loginPassword').value;
- 
-      try {
-        const response = await fetch('http://localhost:3000/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ identificacion, password })
-        });
- 
-        const data = await response.json();
- 
-        if (!response.ok) {
-          throw new Error(data.error);
+    // URL y clave de la API de Supabase
+    const SUPABASE_URL = 'https://fzmdagmfergnxzhdkjnx.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6bWRhZ21mZXJnbnh6aGRram54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5NDAyNjAsImV4cCI6MjA1ODUxNjI2MH0.2zPxZSethNAerHr4AUXho3yiKsJFNWS_tamAcD4bxVI';
+
+    // Función para cargar los datos de los usuarios
+    async function loadUserData() {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/usuarios?select=*`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
         }
- 
-        // Mostrar bienvenida
-        welcomeTitle.textContent = Bienvenido, ${data.user.nombre_usuario};
-        userInfo.innerHTML = `
-          <strong>Email:</strong> ${data.user.email}<br>
-          <strong>Tipo:</strong> ${data.user.usuario_superadministrador ? 'Super Admin' :
-                                 data.user.usuario_administrador ? 'Administrador' : 'Usuario Normal'}
+      });
+
+      if (!response.ok) {
+        alert('Error al obtener los datos de los usuarios');
+        return;
+      }
+
+      const users = await response.json();
+      const tableBody = document.querySelector('#userTable tbody');
+      tableBody.innerHTML = '';  // Limpiar la tabla antes de agregar nuevos datos
+
+      users.forEach(user => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${user.identificacion}</td>
+          <td>${user.nombre_usuario}</td>
+          <td>${user.email}</td>
+          <td>${user.fecha_registro}</td>
         `;
-       
-        loginForm.classList.add('hidden');
-        registerForm.classList.add('hidden');
-        welcomePanel.style.display = 'block';
-       
-      } catch (error) {
-        loginMessage.textContent = error.message;
-        loginMessage.className = 'message error';
-        loginMessage.style.display = 'block';
-      }
-    });
- 
-    // Registro
-    document.getElementById('registerBtn').addEventListener('click', async () => {
-      const userData = {
-        identificacion: document.getElementById('regIdentificacion').value,
-        nombre: document.getElementById('regNombre').value,
-        email: document.getElementById('regEmail').value,
-        password: document.getElementById('regPassword').value,
-        tipoUsuario: document.getElementById('regTipoUsuario').value
-      };
- 
-      try {
-        const response = await fetch('http://localhost:3000/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(userData)
-        });
- 
-        const data = await response.json();
- 
-        if (!response.ok) {
-          throw new Error(data.error);
-        }
- 
-        registerMessage.textContent = data.message;
-        registerMessage.className = 'message success';
-        registerMessage.style.display = 'block';
-       
-        // Limpiar formulario
-        document.getElementById('registerForm').reset();
-       
-      } catch (error) {
-        registerMessage.textContent = error.message;
-        registerMessage.className = 'message error';
-        registerMessage.style.display = 'block';
-      }
-    });
- 
-    // Logout
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      welcomePanel.style.display = 'none';
-      loginForm.classList.remove('hidden');
-      document.getElementById('loginForm').reset();
-    });
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Event listener para cargar los datos cuando el botón sea presionado
+    document.getElementById('loadButton').addEventListener('click', loadUserData);
   </script>
 </body>
 </html>
